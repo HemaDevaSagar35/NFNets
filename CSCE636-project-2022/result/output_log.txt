@@ -1,0 +1,12 @@
+Validation accuracies for lr 0.001, batch size 32 at variou epoch is {10: [1.1742780853748322, 0.598], 20: [0.8555309288740158, 0.7186], 30: [0.6720317874670029, 0.7735], 40: [0.5542064557909966, 0.7988]}
+Validation accuracies for lr 0.001, batch size 64 at variou epoch is {10: [1.354095903968811, 0.525], 20: [1.104988242149353, 0.6272], 30: [0.9196094551086426, 0.6904], 40: [0.7799099326133728, 0.7354]}
+Validation accuracies for lr 0.001, batch size 128 at variou epoch is {10: [1.4820846964915593, 0.4747], 20: [1.2851893210258238, 0.5592], 30: [1.1443256919200604, 0.6171], 40: [1.028034616357241, 0.6576]}
+Validation accuracies for lr 0.001, batch size 256 at variou epoch is {10: [1.671212680064715, 0.3961], 20: [1.4835386918141291, 0.4701], 30: [1.3767483509503877, 0.5062], 40: [1.2822831785067534, 0.5454]}
+Validation accuracies for lr 0.01, batch size 32 at variou epoch is {10: [0.7171683324694633, 0.786], 20: [0.5255046155393124, 0.8155], 30: [0.4536575285553932, 0.812], 40: [0.40818116680681704, 0.8365]}
+Validation accuracies for lr 0.01, batch size 64 at variou epoch is {10: [0.7502527705192565, 0.7589], 20: [0.5322198739528656, 0.8114], 30: [0.41842429807186127, 0.8314], 40: [0.35140639766454695, 0.8501]}
+Validation accuracies for lr 0.01, batch size 128 at variou epoch is {10: [0.9116393910386623, 0.7269], 20: [0.6173519110068296, 0.7765], 30: [0.47197780051292515, 0.8267], 40: [0.3908362140258153, 0.8423]}
+Validation accuracies for lr 0.01, batch size 256 at variou epoch is {10: [1.1325160700541277, 0.6147], 20: [0.7962983491329046, 0.7405], 30: [0.6235532882886056, 0.7832], 40: [0.5064169271634176, 0.8136]}
+Validation accuracies for lr 0.1, batch size 32 at variou epoch is {10: [nan, 0.1014], 20: [nan, 0.1014], 30: [nan, 0.1014], 40: [nan, 0.1014]}
+Validation accuracies for lr 0.1, batch size 64 at variou epoch is {10: [nan, 0.1014], 20: [nan, 0.1014], 30: [nan, 0.1014], 40: [nan, 0.1014]}
+Validation accuracies for lr 0.1, batch size 128 at variou epoch is {10: [nan, 0.1014], 20: [nan, 0.1014], 30: [nan, 0.1014], 40: [nan, 0.1014]}
+Validation accuracies for lr 0.1, batch size 256 at variou epoch is {10: [nan, 0.1014], 20: [nan, 0.1014], 30: [nan, 0.1014], 40: [nan, 0.1014]}

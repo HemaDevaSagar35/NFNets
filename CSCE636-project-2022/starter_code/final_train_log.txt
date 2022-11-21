@@ -1,0 +1,2 @@
+final log accuracies for lr 0.01, batch size 64 at variou epoch is {}
+Test Accuracy at the end is 0.4459
