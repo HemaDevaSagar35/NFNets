@@ -61,6 +61,8 @@ def load_testing_images(data_dir):
     """
 
     ### YOUR CODE HERE
+    path = os.path.join(data_dir, 'private_test_images_2022.npy')
+    x_test = np.load(path)
 
     ### END CODE HERE
 

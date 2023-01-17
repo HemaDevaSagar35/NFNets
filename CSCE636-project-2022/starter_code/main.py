@@ -4,16 +4,16 @@
 import os, argparse
 import numpy as np
 from Model import MyModel
-from DataLoader import load_data, train_valid_split
+from DataLoader import load_data, train_valid_split, load_testing_images
 from Configure import model_configs, training_configs
-from ImageUtils import visualize
+from ImageUtils import visualize, parse_record
 
 
 def configure():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--mode", type=str, default='train', help="hypertune, train, test or predict")
 	parser.add_argument("--data_dir", type=str, help="path to the data")
-	parser.add_argument("--save_dir", type=str, default = '../result/', help="path to save the results")
+	parser.add_argument("--save_dir", type=str, default = '../', help="path to save the results")
 
 	return parser.parse_args()
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 	else:
 		model = MyModel(model_configs)
 		if configs.mode == 'train':
-			print(training_configs)
+			#print(training_configs)
 
 			output_file = os.path.join(configs.save_dir, 'final_train_log.txt')
 			x_train, y_train, x_test, y_test = load_data(configs.data_dir)
@@ -84,9 +84,31 @@ if __name__ == '__main__':
 			x_test = load_testing_images(configs.data_dir)
 			# visualizing the first testing image to check your image shape
 			visualize(x_test[0], 'test.png')
-			# Predicting and storing results on private testing dataset 
-			predictions = model.predict_prob(x_test)
-			np.save(configs.result_dir, predictions)
+			# Predicting and storing results on private testing dataset
+			# Again here we have to load the checkpoint first
+			
+			final_model = os.path.join(model_configs['save_dir'], 'model-200.ckpt')
+			model.load(final_model)
+
+			### My laptop is having issues with prediction probabilities and running into OOM (out of memory)error
+			### So I am break the input into batches and remerging the prediction
+			batch_size = 64
+			num_batches = x_test.shape[0] // batch_size
+			rem = 1 if x_test.shape[0] % batch_size > 0 else 0
+			predictions = []
+			for i in range(num_batches+rem):
+				start_batch = i*batch_size 
+				end_batch = (i+1)*batch_size
+				
+				x_batch = x_test[start_batch:end_batch]
+				x_batch = np.array(list(map(lambda x_i : parse_record(x_i, False), x_batch)))
+				
+				preds = model.predict_prob(x_batch)
+				predictions.append(preds.detach().cpu().numpy())
+				
+			predictions = np.concatenate(predictions, axis=0)
+
+			np.save(os.path.join(configs.save_dir, 'predictions.npy'), predictions)
 		
 
 ### END CODE HERE

@@ -89,6 +89,7 @@ def visualize(image, save_name='test.png'):
     """
     ### YOUR CODE HERE
     image = image.reshape((3, 32, 32))
+    image = np.transpose(image, [1, 2, 0])
     ### YOUR CODE HERE
     
     plt.imshow(image)

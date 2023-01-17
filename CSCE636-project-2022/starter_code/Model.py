@@ -36,7 +36,7 @@ class MyModel(nn.Module):
 
     # def model_setup(self):
     #     pass
-    # I definitely changd the argument catalog here, for ease of mu implementation
+    # I definitely changd the argument catalog here, for ease of my implementation
     def train(self, x_train, y_train, train_config, x_valid=None, y_valid=None):
 
         for g in self.optimizer.param_groups:
@@ -50,8 +50,7 @@ class MyModel(nn.Module):
         for epoch in range(1, train_config['max_epoch']+1):
             self.network.train()
             start_time = time.time()
-            # Shuffle
-            #np.random.seed(3)
+            
             shuffle_index = np.random.permutation(num_samples)
             curr_x_train = x_train[shuffle_index]
             curr_y_train = y_train[shuffle_index]
@@ -88,9 +87,7 @@ class MyModel(nn.Module):
             # if x_valid is not None:
             #     val_error = evaluate(self, x_valid, y_valid)
             print('Epoch {:d} Loss {:.6f} Duration {:.3f} seconds.'.format(epoch, running_loss/num_batches, duration))
-            # if x_valid is not None:
-            #     print("Val error is {}".format(val_error))
-
+            
             if epoch % train_config['save_interval'] == 0:
                 self.save(epoch)
                 val_accuracies[epoch] = [running_loss/num_batches]
@@ -121,10 +118,10 @@ class MyModel(nn.Module):
             y_batch = y[start_batch:end_batch]
 
             x_batch = np.array(list(map(lambda x_i : parse_record(x_i, False), x_batch)))
-            prediction = self.predict_prob(x_batch)
-            #x_batch = torch.tensor(x_batch).float().cuda()
-            #prediction = self.network(x_batch)
-            #prediction = torch.argmax(prediction, dim=1)
+            #prediction = self.predict_prob(x_batch)
+            x_batch = torch.tensor(x_batch).float().cuda()
+            prediction = self.network(x_batch)
+            prediction = torch.argmax(prediction, dim=1)
             preds.extend(prediction)
         
         y = torch.tensor(y)
@@ -137,9 +134,12 @@ class MyModel(nn.Module):
 
     def predict_prob(self, x):
         ### right this assumes there is cuda present in the platform be sure to mention about
+        ### expecting the data to be of shape 3 x 32 x 32
+        
         x = torch.tensor(x).float().to(DEVICE)
         prediction = self.network(x)
-        prediction = torch.argmax(prediction, dim=1)
+        #prediction = torch.argmax(prediction, dim=1)
+        prediction = nn.functional.softmax(prediction, dim=1)
         return prediction
     
     def save(self, epoch):

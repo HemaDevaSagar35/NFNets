@@ -50,33 +50,10 @@ class MyNetwork(nn.Module):
         self.output_layer = output_layer(filters, self.classes)
     
     def forward(self, inputs):
-        # weight = weight - weight_mean
-        # std = weight.view(weight.size(0), -1).std(dim=1).view(-1, 1, 1, 1) + 1e-5
-        # inputs_mean = inputs.view(inputs.size(0), -1).mean(dim=1)
-        # weight.view(weight.size(0), -1).std(dim=1).view(-1, 1, 1, 1) + 1e-5
         
-        # inputs_mean = inputs.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-        # inputs_norm = inputs - inputs_mean
-        # std = inputs_norm.view(inputs_norm.size(0), -1).std(dim=1).view(-1, 1, 1, 1)
-        # print("before starting {}".format(std))
-
-
         outputs = self.start_layer(inputs)
-        #print(outputs[0,:,:,:])
-        #outputs = nn.ReLU()(outputs)
-
-        # outputs_mean = outputs.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-        # outputs_norm = outputs - outputs_mean
-        # std = outputs_norm.view(outputs_norm.size(0), -1).std(dim=1).view(-1, 1, 1, 1)
-        # print("After starting {}".format(std))
-
         for i in range(3):
             outputs = self.stack_layers[i](outputs)
-            # outputs_mean = outputs.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-            # outputs_norm = outputs - outputs_mean
-            # std = outputs_norm.view(outputs_norm.size(0), -1).std(dim=1).view(-1, 1, 1, 1)
-            # print("After {} it is {}".format(i, std))
-            #print("after layer {} it is this {}".format(i, outputs[0,:,:,:]))
         outputs = self.output_layer(outputs)
         return outputs
 
@@ -142,33 +119,12 @@ class NFNet_Block(nn.Module):
 
         outputs = inputs/self.beta
 
-        # outputs_mean = outputs.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-        # outputs_norm = outputs - outputs_mean
-        # std = outputs_norm.view(outputs_norm.size(0), -1).std(dim=1).view(-1, 1, 1, 1)
-        # print("before block after beta normalized {}".format(std))
-        
         outputs = self.block_seq(outputs)
-
-        # outputs_mean = outputs.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-        # outputs_norm = outputs - outputs_mean
-        # std = outputs_norm.view(outputs_norm.size(0), -1).std(dim=1).view(-1, 1, 1, 1)
-        # print("after block sequence {}".format(std))
-
         outputs = self.alpha*outputs
-
-        # outputs_mean = outputs.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-        # outputs_norm = outputs - outputs_mean
-        # std = outputs_norm.view(outputs_norm.size(0), -1).std(dim=1).view(-1, 1, 1, 1)
-        # print("after alpha normalizing block sequence {}".format(std))
 
         if self.projection_shortcut is not None:
             inputs = self.projection_shortcut(inputs/self.beta)
         outputs = outputs + inputs
-
-        # outputs_mean = outputs.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-        # outputs_norm = outputs - outputs_mean
-        # std = outputs_norm.view(outputs_norm.size(0), -1).std(dim=1).view(-1, 1, 1, 1)
-        # print("after alpha normalizing block sequence {}".format(std))
 
         return outputs
 
@@ -190,11 +146,6 @@ class Conv2d_modified(nn.Conv2d):
         std = weight.view(weight.size(0), -1).std(dim=1).view(-1, 1, 1, 1) + 1e-5
 
         weight = (weight / std.expand_as(weight))/self.N
-
-        # weight_mean = weight.mean(dim=1, keepdim=True).mean(dim=2, keepdim=True).mean(dim=3, keepdim=True)
-        # weight_diff = weight - weight_mean
-        # std = weight_diff.view(weight_diff.size(0), -1).std(dim=1).view(-1, 1, 1, 1) + 1e-5
-        # print("is weight normalized here {}".format(std))
 
         weight = self.gain*weight
         return F.conv2d(inputs, weight ,self.bias, self.stride, self.padding, self.dilation, self.groups)
